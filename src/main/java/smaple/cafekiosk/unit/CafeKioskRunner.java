@@ -2,6 +2,9 @@ package smaple.cafekiosk.unit;
 
 import smaple.cafekiosk.unit.beverage.Americano;
 import smaple.cafekiosk.unit.beverage.Latte;
+import smaple.cafekiosk.unit.orders.Order;
+
+import java.time.LocalDateTime;
 
 /**
  * 수동 테스트
@@ -10,14 +13,16 @@ import smaple.cafekiosk.unit.beverage.Latte;
 public class CafeKioskRunner {
     public static void main(String[] args) {
         CafeKiosk cafeKiosk = new CafeKiosk();
-        cafeKiosk.add(new Americano());
+        cafeKiosk.add(new Americano(),1);
         System.out.println("Americano add-----");
 
-        cafeKiosk.add(new Latte());
+        cafeKiosk.add(new Latte(),1);
         System.out.println("Latte add-----");
 
         int totalPrice = cafeKiosk.calculateTotalPrice();
         System.out.println("Total Price : " + totalPrice);
+
+        Order order = cafeKiosk.createOrder(LocalDateTime.now());
 
     }
 }
