@@ -21,6 +21,8 @@ repositories {
 	mavenCentral()
 }
 
+
+
 dependencies {
 	//Spring boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
