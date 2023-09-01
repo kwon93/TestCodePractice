@@ -37,7 +37,7 @@ class AmericanoTest {
 
     //자동화된 테스트 사람이 눈으로 직접 확인하지않고 프로그램을 통해 검증
     @Test
-    @DisplayName("Cafe Kiosk add Test")
+    @DisplayName("음료 1개를 추가하면 주문 목록에 담긴다.") // DisplayName 은 자세하기 작성.
     void test3() throws Exception{
          //given
         CafeKiosk cafeKiosk = new CafeKiosk();

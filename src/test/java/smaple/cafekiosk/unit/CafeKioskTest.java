@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import smaple.cafekiosk.unit.beverage.Americano;
+import smaple.cafekiosk.unit.beverage.Latte;
 import smaple.cafekiosk.unit.orders.Order;
 
 import java.time.LocalDateTime;
@@ -54,7 +55,8 @@ class CafeKioskTest {
      * @throws Exception
      */
     @Test
-    @DisplayName("createOrder(): 주문에 성공하기")
+//    @DisplayName("createOrder(): 주문에 성공하기")
+    @DisplayName("createOrder(): 영업 시작 시간 이전에는 주문을 생성할 수 있다.")
     void test3() throws Exception{
         //given
         CafeKiosk cafeKiosk = new CafeKiosk();
@@ -83,6 +85,30 @@ class CafeKioskTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 시간이 아닙니다. 관리자에게 문의해주세요.");
     }
+
+    /**
+     * TDD : 먼저 테스트 코드를 작성하고 프로덕션 코드를 작성하기
+     * @throws Exception
+     */
+    @Test
+//    @DisplayName("[TDD] calculatorTotalPrice() : 총 금액 계산에 성공하기 ")
+    @DisplayName("[TDD] calculatorTotalPrice() : 주문 목록에 담긴 상품들의 총 금액을 계산할 수 있다.")
+    void test() throws Exception{
+        //given
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+        Latte latte = new Latte();
+
+        cafeKiosk.add(americano,1);
+        cafeKiosk.add(latte,1);
+
+        //when
+        int totalPrice = cafeKiosk.calculateTotalPrice();
+
+        //then
+        assertThat(totalPrice).isEqualTo(10500);
+    }
+    
 
 
 
