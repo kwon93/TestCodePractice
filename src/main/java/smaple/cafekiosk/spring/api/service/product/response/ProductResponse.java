@@ -2,11 +2,13 @@ package smaple.cafekiosk.spring.api.service.product.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import smaple.cafekiosk.spring.domain.product.Product;
 import smaple.cafekiosk.spring.domain.product.ProductSellingStatus;
 import smaple.cafekiosk.spring.domain.product.ProductType;
 
 @Getter
+@NoArgsConstructor
 public class ProductResponse {
 
     private Long id;

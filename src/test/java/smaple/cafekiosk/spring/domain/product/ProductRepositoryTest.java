@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test") //Spring profile 상태 지정가능.
 //@SpringBootTest
-@DataJpaTest //@SpringBootTest 보다 가벼움. JPA에 필요한 bean만 띄워줌
+@DataJpaTest //@SpringBootTest 보다 가벼움. JPA에 필요한 bean만 띄워줌, 자동으로 RollBack이 됨.
 class ProductRepositoryTest {
 
     @Autowired
@@ -61,6 +61,49 @@ class ProductRepositoryTest {
                 .containsExactlyInAnyOrder( //리스트 검증시 사용되는 검증메서드 순서 상관없음.
                         tuple("001","Americano",ProductSellingStatus.SELLING),
                         tuple("002","CafeLatte",ProductSellingStatus.HOLD));
+    }
+
+    @Test
+    @DisplayName("findAllByProductNumberIn() : 삼품 번호 리스트로  상품 조회에 성공한다.")
+    void findAllByProductNumberIn() throws Exception{
+         //given
+        Product product1 = Product.builder()
+                .productNumber("001")
+                .type(ProductType.HANDMADE)
+                .sellingStatus(ProductSellingStatus.SELLING)
+                .name("Americano")
+                .price(4000)
+                .build();
+
+        Product product2 = Product.builder()
+                .productNumber("002")
+                .type(ProductType.HANDMADE)
+                .sellingStatus(ProductSellingStatus.HOLD)
+                .name("CafeLatte")
+                .price(4500)
+                .build();
+
+        Product product3 = Product.builder()
+                .productNumber("003")
+                .type(ProductType.HANDMADE)
+                .sellingStatus(ProductSellingStatus.STOP_SELLING)
+                .name("팥빙수")
+                .price(7000)
+                .build();
+
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+         //when
+
+        List<Product> products = productRepository.findAllByProductNumberIn(List.of("001","002"));
+
+        //then
+        assertThat(products).hasSize(2)
+                .extracting("productNumber","name","sellingStatus")
+                .containsExactlyInAnyOrder( //리스트 검증시 사용되는 검증메서드 순서 상관없음.
+                        tuple("001","Americano",ProductSellingStatus.SELLING),
+                        tuple("002","CafeLatte",ProductSellingStatus.HOLD));
+
     }
 
 
