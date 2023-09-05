@@ -2,6 +2,7 @@ package smaple.cafekiosk.spring.api.service.order;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import smaple.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import smaple.cafekiosk.spring.api.service.order.response.OrderResponse;
 import smaple.cafekiosk.spring.domain.order.Order;
@@ -13,52 +14,79 @@ import smaple.cafekiosk.spring.domain.stock.Stock;
 import smaple.cafekiosk.spring.domain.stock.StockRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderService {
 
     private final ProductRepository productRepository;
-    private final OrderRepository ordeRepository;
+    private final OrderRepository orderRepository;
     private final StockRepository stockRepository;
     public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredTime) {
         List<String> productNumbers = request.getProductNumber();
         //product
-        List<Product> duplicateProduct = findProductsBy(productNumbers);
-        
+        List<Product> products = findProductsBy(productNumbers);
+
+        deductStockQuantities(products);
+
+        Order order = Order.create(products, registeredTime);
+        Order savedOrder = orderRepository.save(order);
+
+        //order
+        return OrderResponse.of(savedOrder);
+    }
+
+
+    /**
+     * 재고 감소 : 동시성 문제 (동시에 차감 요청이 왔을 때)
+     * optimistic lock / pessimistic lock / .... 먼저 온 요청이 먼저 재고를 차감할 수 있도록...
+     */
+    private void deductStockQuantities(List<Product> products) {
         //재고 차감 체크가 필요한 상품들 필터링
-        List<String> stockProductNumbers = duplicateProduct.stream()
-                .filter(product -> ProductType.containsStockType(product.getType()))
-                .map(Product::getProductNumber)
-                .toList();
+        List<String> stockProductNumbers = extractStockProductNumbers(products);
         //재고 Entity 조회
-        List<Stock> stocks = stockRepository.findAllByProductNumberIn(stockProductNumbers);
-        Map<String, Stock> stockMap = stocks.stream()
-                .collect(Collectors.toMap(Stock::getProductNumber, s -> s));
+        Map<String, Stock> stockMap = createStockMapBy(stockProductNumbers);
         //상품별 Counting
-        Map<String, Long> productCountingMap = stockProductNumbers.stream()
-                .collect(Collectors.groupingBy(productNumber -> productNumber, Collectors.counting()));
+        Map<String, Long> productCountingMap = createCountingMapBy(stockProductNumbers);
 
         //재고 차감 시도
-        for (String stockProductNumber : productCountingMap.keySet()) {
+        for (String stockProductNumber : new HashSet<>(stockProductNumbers)) {
             Stock stock = stockMap.get(stockProductNumber);
-            Long quantity = productCountingMap.get(stockProductNumber);
+            int quantity = productCountingMap.get(stockProductNumber).intValue();
+
             if (stock.isQuantityLessThan(quantity)){
                 throw new IllegalArgumentException("재고가 부족한 상품이 있습니다.");
             }
+
             stock.deductQuantity(quantity);
-
         }
+    }
 
-        Order order = Order.create(duplicateProduct, registeredTime);
-        Order savedOrder = ordeRepository.save(order);
 
-        
-        //order
-        return OrderResponse.of(savedOrder);
+    private static List<String> extractStockProductNumbers(List<Product> products) {
+        List<String> stockProductNumbers = products.stream()
+                .filter(product -> ProductType.containsStockType(product.getType()))
+                .map(Product::getProductNumber)
+                .toList();
+        return stockProductNumbers;
+    }
+
+    private Map<String, Stock> createStockMapBy(List<String> stockProductNumbers) {
+        List<Stock> stocks = stockRepository.findAllByProductNumberIn(stockProductNumbers);
+
+        return stocks.stream()
+                .collect(Collectors.toMap(Stock::getProductNumber, s -> s));
+    }
+
+    private static Map<String, Long> createCountingMapBy(List<String> stockProductNumbers) {
+
+        return stockProductNumbers.stream()
+                .collect(Collectors.groupingBy(productNumber -> productNumber, Collectors.counting()));
     }
 
     private List<Product> findProductsBy(List<String> productNumbers) {
@@ -66,10 +94,10 @@ public class OrderService {
         Map<String, Product> productMap = products.stream()
                 .collect(Collectors.toMap(Product::getProductNumber, product -> product));
 
-        List<Product> duplicateProduct = productNumbers.stream()
+        return productNumbers.stream()
                 .map(productNumber -> productMap.get(productNumber))
                 .toList();
-        return duplicateProduct;
+
     }
 
 

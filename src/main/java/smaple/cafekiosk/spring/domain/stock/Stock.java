@@ -37,19 +37,19 @@ public class Stock {
     }
 
     /**
-     * 재고가 매개변숙값보다 적은지 확인하는 메서드
+     * 재고가 매개 변수값보다 적은지 확인하는 메서드
      * @param quantity
      * @return (@Code true, false)
      */
-    public boolean isQuantityLessThan(Long quantity) {
+    public boolean isQuantityLessThan(int quantity) {
         return this.quantity < quantity;
     }
 
-    /**
-     *
-     * @param quantity
-     */
-    public void deductQuantity(Long quantity) {
 
+    public void deductQuantity(int quantity) {
+        if (isQuantityLessThan(quantity)){
+            throw new IllegalArgumentException("차감할 수량의 재고가 없습니다.");
+        }
+        this.quantity -= quantity;
     }
 }

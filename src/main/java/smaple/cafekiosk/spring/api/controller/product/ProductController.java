@@ -2,7 +2,9 @@ package smaple.cafekiosk.spring.api.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import smaple.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import smaple.cafekiosk.spring.api.service.product.ProductService;
 import smaple.cafekiosk.spring.api.service.product.response.ProductResponse;
 
@@ -14,8 +16,17 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @PostMapping("/api/v1/product/new")
+    public void createProduct(ProductCreateRequest request){
+        productService.createProduct(request);
+    }
+
     @GetMapping("/api/v1/product/selling")
     public List<ProductResponse> getSellingProducts(){
         return productService.getSellingProducts();
     }
+
+
+
+
 }
