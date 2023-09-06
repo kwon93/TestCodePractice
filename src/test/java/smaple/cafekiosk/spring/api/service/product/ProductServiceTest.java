@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import smaple.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
+import smaple.cafekiosk.spring.api.service.product.request.ProductServieceCreateRequest;
 import smaple.cafekiosk.spring.api.service.product.response.ProductResponse;
 import smaple.cafekiosk.spring.domain.product.Product;
 import smaple.cafekiosk.spring.domain.product.ProductRepository;
@@ -45,7 +46,7 @@ class ProductServiceTest {
         productRepository.save(product);
 
 
-        ProductCreateRequest request = ProductCreateRequest.builder()
+        ProductServieceCreateRequest request = ProductServieceCreateRequest.builder()
                 .type(HANDMADE)
                 .sellingStatus(SELLING)
                 .name("Cappuccino")
@@ -65,7 +66,7 @@ class ProductServiceTest {
     @DisplayName("상품이 하나도 없는 경우에 상품을 등록하면 상품 번호는 001 이다.")
     void createProductWhenProductIsEmpty() throws Exception {
         //given
-        ProductCreateRequest request = ProductCreateRequest.builder()
+        ProductServieceCreateRequest request = ProductServieceCreateRequest.builder()
                 .type(HANDMADE)
                 .sellingStatus(SELLING)
                 .name("Cappuccino")

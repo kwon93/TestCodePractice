@@ -1,20 +1,22 @@
 package smaple.cafekiosk.spring.api;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import smaple.cafekiosk.spring.api.service.product.response.ProductResponse;
 
+@Getter
 public class ApiResponse<T> {
 
     private HttpStatus status;
     private int code;
     private String message;
-    private T date;
+    private T data;
 
-    public ApiResponse(HttpStatus status, String message, T date) {
+    public ApiResponse(HttpStatus status, String message, T data) {
         this.status = status;
         this.code = status.value();
         this.message = message;
-        this.date = date;
+        this.data = data;
     }
 
 
