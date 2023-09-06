@@ -31,7 +31,6 @@ public class OrderService {
         List<String> productNumbers = request.getProductNumber();
         //product
         List<Product> products = findProductsBy(productNumbers);
-
         deductStockQuantities(products);
 
         Order order = Order.create(products, registeredTime);
