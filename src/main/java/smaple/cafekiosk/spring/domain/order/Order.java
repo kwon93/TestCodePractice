@@ -1,6 +1,7 @@
 package smaple.cafekiosk.spring.domain.order;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import smaple.cafekiosk.spring.domain.BaseEntity;
@@ -42,6 +43,13 @@ public class Order extends BaseEntity {
 
     }
 
+    @Builder
+    public Order(List<Product> products, int totalPrice, LocalDateTime registeredDateTime, List<OrderProduct> orderProduct) {
+        this.orderStatus = orderStatus;
+        this.totalPrice = totalPrice;
+        this.registeredDateTime = registeredDateTime;
+        this.orderProduct = orderProduct;
+    }
 
     public static Order create(List<Product> products, LocalDateTime registeredDateTime) {
         return new Order(products, registeredDateTime);
