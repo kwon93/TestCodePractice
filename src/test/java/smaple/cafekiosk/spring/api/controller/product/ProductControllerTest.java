@@ -30,7 +30,6 @@ import static smaple.cafekiosk.spring.domain.product.ProductType.*;
  * Presentation Layer 계층 테스트시 중요 사항
  * 클라이언트의 요청이 정확히 유효하게 들어왔는지 검증하기
  */
-
 @WebMvcTest(controllers = ProductController.class) //컨트롤러관련 bean들만 띄워주는 테스트
 class ProductControllerTest {
 

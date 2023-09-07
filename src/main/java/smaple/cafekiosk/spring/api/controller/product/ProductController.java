@@ -12,6 +12,7 @@ import smaple.cafekiosk.spring.api.service.product.ProductService;
 import smaple.cafekiosk.spring.api.service.product.response.ProductResponse;
 
 import javax.validation.Valid;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
