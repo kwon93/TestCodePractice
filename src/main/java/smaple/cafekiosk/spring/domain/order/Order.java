@@ -33,29 +33,25 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProduct = new ArrayList<>();
 
-    public Order(List<Product> products, LocalDateTime registeredDateTime){
-        this.orderStatus = OrderStatus.INIT;
+
+    @Builder
+    public Order(List<Product> products, OrderStatus orderStatus, LocalDateTime registeredDateTime) {
+        this.orderStatus = orderStatus;
         this.totalPrice = calculateTotalPrice(products);
         this.registeredDateTime = registeredDateTime;
         this.orderProduct = products.stream()
                 .map(product -> new OrderProduct(this,product))
                 .toList();
-
-    }
-
-    @Builder
-    public Order(List<Product> products, int totalPrice, LocalDateTime registeredDateTime, List<OrderProduct> orderProduct) {
-        this.orderStatus = orderStatus;
-        this.totalPrice = totalPrice;
-        this.registeredDateTime = registeredDateTime;
-        this.orderProduct = orderProduct;
     }
 
     public static Order create(List<Product> products, LocalDateTime registeredDateTime) {
-        return new Order(products, registeredDateTime);
+        return Order.builder()
+                .orderStatus(OrderStatus.INIT)
+                .products(products)
+                .registeredDateTime(registeredDateTime)
+                .build();
 
     }
-
     private int calculateTotalPrice(List<Product> products) {
         return products.stream()
                 .mapToInt(Product::getPrice)

@@ -17,13 +17,13 @@ public class OrderStaticsService  {
 
     private final OrderRepository orderRepository;
     private final MailService mailService;
-    public void sendOrderStaticsMail(LocalDate orderDate, String email)  {
+    public boolean sendOrderStaticsMail(LocalDate orderDate, String email)  {
         //해당일자에 결제완료된 주문들을 가져와서
         List<Order> orders = orderRepository.findOrdersBy(
                 //주문 등록시간을 기준으로 하루치 주문을 검색하기
                 orderDate.atStartOfDay(),
                 orderDate.plusDays(1).atStartOfDay(),
-                OrderStatus.COMPLETED
+                OrderStatus.PAYMENT_COMPLETED
         );
 
         //총 매출 합계를 계산하고
@@ -36,13 +36,14 @@ public class OrderStaticsService  {
                 "no-reply@cafekiosk.com",
                 email,
                 String.format("[매출 통계] %s", orderDate),
-                String.format("총 매출 합계는 %s 원입니다.", totalAmount)
+                String.format("총 매출 합계는 %s원입니다.", totalAmount)
         );
+
         if (!result){
             throw new IllegalArgumentException("매출 통계 메일 전송에 실패했습니다.");
         }
 
-
+        return true;
 
     }
 }
