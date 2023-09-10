@@ -29,33 +29,19 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     //동시성 이슈 존재 : 동시에 여러명이 제품을 동시에 등록할 때....
-
     private final ProductRepository productRepository;
+    private final ProductNumberFactory productNumberFactory;
 
     @Transactional
     public ProductResponse createProduct(ProductServieceCreateRequest request) {
         //next Product
-        String nextProductNumber = createNextProductNumber();
-
+        String nextProductNumber = productNumberFactory.createNextProductNumber();
         Product product = request.toEntity(nextProductNumber);
         Product savedProduct = productRepository.save(product);
 
         return ProductResponse.of(savedProduct);
     }
 
-    private String createNextProductNumber(){
-        //productNumber 부여 001,002,003.....DB에서 마지막 저장된 프로덕트의 상품 번호를 읽어와서 +1
-        String  latestProductNumber = productRepository.findLatestProductNumber();
-        if (latestProductNumber == null){
-            return "001";
-        }
-
-        int latestProductNumberInt = Integer.parseInt(latestProductNumber);
-        int nextProductNumberInt = latestProductNumberInt + 1;
-
-        // 9 -> 009, 10 -> 010 3칸 padding 되는 포맷
-        return String.format("%03d", nextProductNumberInt);
-    }
 
     /**
      * 판매 여부 조회
@@ -68,6 +54,5 @@ public class ProductService {
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
-
 
 }

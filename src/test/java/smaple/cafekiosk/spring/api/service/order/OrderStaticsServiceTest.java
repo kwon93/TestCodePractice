@@ -8,6 +8,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import smaple.cafekiosk.spring.IntegrationTestSupport;
 import smaple.cafekiosk.spring.client.mail.MailSendClient;
 import smaple.cafekiosk.spring.domain.history.mail.MailSendHistory;
 import smaple.cafekiosk.spring.domain.history.mail.MailSendHistoryRepository;
@@ -29,8 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-class OrderStaticsServiceTest {
+class OrderStaticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderStaticsService orderStaticsService;
@@ -47,8 +48,6 @@ class OrderStaticsServiceTest {
     @Autowired
     private MailSendHistoryRepository historyRepository;
 
-    @MockBean
-    private MailSendClient mailSendClient;
 
     @AfterEach
     void tearDown() {

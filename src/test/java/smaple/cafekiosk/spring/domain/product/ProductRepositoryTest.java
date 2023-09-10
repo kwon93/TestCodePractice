@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+import smaple.cafekiosk.spring.IntegrationTestSupport;
 
 import java.util.List;
 
@@ -12,10 +14,11 @@ import static org.assertj.core.api.Assertions.*;
 import static smaple.cafekiosk.spring.domain.product.ProductSellingStatus.*;
 import static smaple.cafekiosk.spring.domain.product.ProductType.*;
 
-@ActiveProfiles("test") //Spring profile 상태 지정가능.
+//@ActiveProfiles("test") //Spring profile 상태 지정가능.
 //@SpringBootTest
-@DataJpaTest //@SpringBootTest 보다 가벼움. JPA에 필요한 bean만 띄워줌, 자동으로 RollBack이 됨.
-class ProductRepositoryTest {
+//@DataJpaTest //@SpringBootTest 보다 가벼움. JPA에 필요한 bean만 띄워줌, 자동으로 RollBack이 됨.
+@Transactional
+class ProductRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private ProductRepository productRepository;

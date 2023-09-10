@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import smaple.cafekiosk.spring.ControllerTestSupport;
 import smaple.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import smaple.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import smaple.cafekiosk.spring.api.service.order.OrderService;
@@ -23,18 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static smaple.cafekiosk.spring.domain.product.ProductSellingStatus.SELLING;
 import static smaple.cafekiosk.spring.domain.product.ProductType.HANDMADE;
 
-@WebMvcTest(controllers = Ordercontroller.class)
-class OrdercontrollerTest {
-
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private OrderService orderService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class OrdercontrollerTest extends ControllerTestSupport {
 
 
     @Test

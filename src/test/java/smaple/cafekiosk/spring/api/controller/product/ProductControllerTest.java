@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.result.ModelResultMatchers;
+import smaple.cafekiosk.spring.ControllerTestSupport;
 import smaple.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import smaple.cafekiosk.spring.api.service.product.ProductService;
 import smaple.cafekiosk.spring.api.service.product.response.ProductResponse;
@@ -34,16 +35,8 @@ import static smaple.cafekiosk.spring.domain.product.ProductType.*;
  * Presentation Layer 계층 테스트시 중요 사항
  * 클라이언트의 요청이 정확히 유효하게 들어왔는지 검증하기
  */
-@WebMvcTest(controllers = ProductController.class) //컨트롤러관련 bean들만 띄워주는 테스트
-class ProductControllerTest {
-
-    @Autowired
-    protected MockMvc mockMvc;
-    @MockBean //mockito (Bean을 Mocking)
-    private ProductService productService;
-    @Autowired
-    private ObjectMapper objectMapper;
-
+//@WebMvcTest(controllers = ProductController.class) //컨트롤러관련 bean들만 띄워주는 테스트
+class ProductControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("신규상품을 생성한다.")

@@ -41,7 +41,6 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-
     /**
      * 재고 감소 : 동시성 문제 (동시에 차감 요청이 왔을 때)
      * optimistic lock / pessimistic lock / .... 먼저 온 요청이 먼저 재고를 차감할 수 있도록...

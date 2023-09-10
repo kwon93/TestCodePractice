@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import smaple.cafekiosk.spring.IntegrationTestSupport;
 import smaple.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import smaple.cafekiosk.spring.api.service.order.request.OrderCreateServiceRequest;
 import smaple.cafekiosk.spring.api.service.order.response.OrderResponse;
@@ -28,10 +29,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("test")
-@SpringBootTest
 //@Transactional
-class OrderServiceTest {
+class OrderServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderService orderService;
@@ -50,20 +49,18 @@ class OrderServiceTest {
 
     @AfterEach
     void tearDown() { //연관 관계로 인한 순서 주의
-        orderProductRepository.deleteAllInBatch();
+        orderProductRepository.deleteAllInBatch(); //깔끔하게 테이블 자체를 delete (where절 없이 삭제) / FK 연관으로 인해 순서를 고려해 작성해야함.
+//        orderRepository.deleteAll(); InBatch와의 차이점 : 삭제시 select 후 건마다 진행. (where절 추가) 성능이 느려질 수 있음. / FK 상관안하고 순서상관없이 삭제를 진행. / 삭제 쿼리가 길어짐.
         productRepository.deleteAllInBatch();
         orderRepository.deleteAllInBatch();
+
         stockRepository.deleteAllInBatch();
     }
-
-
 
     @Test
     @DisplayName("createOrder(): 주문 번호 리스트를 받아 주문을 생성한다.")
     void createOrder() throws Exception{
          //given
-
-
         LocalDateTime registeredDateTime = LocalDateTime.now();
 
         Product product1 = createProduct(ProductType.HANDMADE, "001",1000);
@@ -90,13 +87,7 @@ class OrderServiceTest {
                         tuple("001",1000),
                         tuple("002",3000)
                 );
-
     }
-
-
-
-
-
 
 
 
@@ -104,8 +95,6 @@ class OrderServiceTest {
     @DisplayName("중복되는 상품번호 리스트로 주문을 생성 할 수 있다.")
     void createOrderWithDuplicateProductNumbers() throws Exception{
         //given
-
-
         LocalDateTime registeredDateTime = LocalDateTime.now();
 
         Product product1 = createProduct(ProductType.HANDMADE, "001",1000);
@@ -113,12 +102,9 @@ class OrderServiceTest {
         Product product3 = createProduct(ProductType.HANDMADE, "003",5000);
         productRepository.saveAll(List.of(product1, product2, product3));
 
-
         OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumber(List.of("001", "001"))
                 .build();
-
-
 
         //when
         OrderResponse orderResponse = orderService.createOrder(request,registeredDateTime);
@@ -143,7 +129,7 @@ class OrderServiceTest {
         //given
         LocalDateTime registeredDateTime = LocalDateTime.now();
 
-        Product product1 = createProduct(ProductType.BOTTEL, "001",1000);
+        Product product1 = createProduct(ProductType.BOTTLE, "001",1000);
         Product product2 = createProduct(ProductType.BAKERY, "002",3000);
         Product product3 = createProduct(ProductType.HANDMADE, "003",5000);
         productRepository.saveAll(List.of(product1, product2, product3));
@@ -190,14 +176,14 @@ class OrderServiceTest {
         //given
         LocalDateTime registeredDateTime = LocalDateTime.now();
 
-        Product product1 = createProduct(ProductType.BOTTEL, "001",1000);
+        Product product1 = createProduct(ProductType.BOTTLE, "001",1000);
         Product product2 = createProduct(ProductType.BAKERY, "002",3000);
         Product product3 = createProduct(ProductType.HANDMADE, "003",5000);
         productRepository.saveAll(List.of(product1, product2, product3));
 
         Stock stock1 = Stock.create("001",2);
         Stock stock2 = Stock.create("002",2);
-        stock1.deductQuantity(1);
+        stock1.deductQuantity(1); //todo
         stockRepository.saveAll(List.of(stock1,stock2));
 
         OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()

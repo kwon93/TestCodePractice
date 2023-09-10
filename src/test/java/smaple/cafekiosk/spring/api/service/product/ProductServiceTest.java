@@ -1,13 +1,12 @@
 package smaple.cafekiosk.spring.api.service.product;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import smaple.cafekiosk.spring.IntegrationTestSupport;
 import smaple.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import smaple.cafekiosk.spring.api.service.product.request.ProductServieceCreateRequest;
 import smaple.cafekiosk.spring.api.service.product.response.ProductResponse;
@@ -23,14 +22,24 @@ import static org.junit.jupiter.api.Assertions.*;
 import static smaple.cafekiosk.spring.domain.product.ProductSellingStatus.*;
 import static smaple.cafekiosk.spring.domain.product.ProductType.HANDMADE;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class ProductServiceTest {
+class ProductServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ProductService productService;
     @Autowired
     private ProductRepository productRepository;
+
+    @BeforeAll
+    static void beforeAll() {
+        //beforeClass
+    }
+
+    @BeforeEach //테스트간의 결합도를 올리는 경우를 가져오기에 지양하는것이 좋다. (공유 자원) , given절 미비로 또한 가독성이 떨어진다.
+    void setUp(){
+        //beforeEach의 사용 경우
+        // 각 테스트 입장에서 봤을 때 : 아에 몰라도 테스트 내용을 이해하는데 문제가 없는가
+        // 수정해도 모든 테스트에 영향을 주지 않는가
+    }
 
     @AfterEach
     void tearDown() {
@@ -42,9 +51,7 @@ class ProductServiceTest {
     void createProduct() throws Exception {
         //given
         Product product = createProduct("001", HANDMADE,SELLING,"Americano",4000);
-
         productRepository.save(product);
-
 
         ProductServieceCreateRequest request = ProductServieceCreateRequest.builder()
                 .type(HANDMADE)

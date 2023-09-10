@@ -10,19 +10,4 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class OrderRepositoryTest {
 
-    @Autowired
-    OrderRepository orderRepository;
-
-
-    @Test
-    @DisplayName("")
-    void findOrdersBy() throws Exception {
-        //given
-
-        // when
-
-        //then
-
-    }
-
 }
