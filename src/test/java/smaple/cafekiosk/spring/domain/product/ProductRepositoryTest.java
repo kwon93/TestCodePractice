@@ -60,7 +60,7 @@ class ProductRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("findAllByProductNumberIn() : 삼품 번호 리스트로  상품 조회에 성공한다.")
+     @DisplayName("findAllByProductNumberIn() : 삼품 번호 리스트로  상품 조회에 성공한다.")
     void findAllByProductNumberIn() throws Exception{
          //given
         Product product1 = createProduct("001",HANDMADE,SELLING,"Americano",4000);
